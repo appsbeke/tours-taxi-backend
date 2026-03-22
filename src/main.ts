@@ -20,10 +20,12 @@ async function bootstrap() {
     }),
   );
 
-  // API prefix and versioning
+  // API prefix and versioning (exclude health check endpoint)
   const apiPrefix = configService.get('API_PREFIX') || 'api';
   const apiVersion = configService.get('API_VERSION') || 'v1';
-  app.setGlobalPrefix(`${apiPrefix}/${apiVersion}`);
+  app.setGlobalPrefix(`${apiPrefix}/${apiVersion}`, {
+    exclude: ['health', '/'],
+  });
 
   // CORS
   app.enableCors({
