@@ -5,8 +5,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --legacy-peer-deps
+# Install dependencies (use npm install since package-lock.json doesn't exist)
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -22,8 +22,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --legacy-peer-deps --only=production && \
+# Install only production dependencies (use npm install since package-lock.json doesn't exist)
+RUN npm install --legacy-peer-deps --only=production && \
     npm cache clean --force
 
 # Copy built application from builder
@@ -40,7 +40,7 @@ RUN chown -R nestjs:nodejs /app
 USER nestjs
 
 # Render uses PORT env var (defaults to 10000 on free tier)
-EXPOSE ${PORT:-10000}
+EXPOSE 10000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
   CMD node -e "const port = process.env.PORT || 10000; require('http').get('http://localhost:' + port + '/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
